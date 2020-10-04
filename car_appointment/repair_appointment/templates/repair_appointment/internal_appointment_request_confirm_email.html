@@ -1,0 +1,21 @@
+{% autoescape off %}
+A user has requested an appointment for vehicle repairs. Here is the information:
+
+Client
+Name: {{ user.first_name }} {{ user.last_name }}
+Phone Number: {{ user.phone_number}}
+Email Address: {{ user.email_address }}
+IP Address: {{ ip_address}}
+
+Vehicle Information
+Vehicle Year: {{ vehicle.vehicle_year }}
+Vehicl Make: {{ vehicle.vehicle_make }}
+Vehicle Model: {{ vehicle.vehicle_model }}
+
+Appointment Information
+Requested Repair: {{ appointment.vehicle_repair }}
+Appointment Time: {{ appointment.appointment_time }}
+
+Sincerely,
+Car Repair
+{% endautoescape %}

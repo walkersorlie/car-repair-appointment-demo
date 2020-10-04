@@ -1,0 +1,10 @@
+{% autoescape off %}
+You have requested an appointment for a vehicle repair. Please follow this link to complete your account activation and schedule an appointment.
+{{ protocol }}://{{ domain }}{% url 'repair_appointment:request_appointment' uid=user_id %}
+
+If clicking the link above doesn't work, please copy and paste the URL in a new browser
+window instead.
+
+Sincerely,
+Car Repair
+{% endautoescape %}
