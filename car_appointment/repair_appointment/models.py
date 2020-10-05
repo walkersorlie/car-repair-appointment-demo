@@ -1,6 +1,8 @@
 import uuid
 from django.db import models
 from django.core.validators import RegexValidator
+from datetime import datetime, timezone
+import pytz
 
 
 class AppointmentUser(models.Model):
@@ -17,6 +19,15 @@ class AppointmentRequest(models.Model):
     appointment_user = models.ForeignKey(AppointmentUser, on_delete=models.CASCADE)
     vehicle_repair = models.TextField()
     appointment_time = models.DateTimeField()
+
+    # def save(self, *args, **kwargs):
+    #     if not self.id:
+    #         local_timestamp = datetime.timestamp(self.appointment_time)
+    #         utc_dt = datetime.fromtimestamp(local_timestamp, pytz.utc)
+    #         self.appointment_time = utc_dt
+    #         # self.appointment_time = self.appointment_time.astimezone().astimezone(pytz.utc).replace(tzinfo=None)
+    #
+    #     super(AppointmentRequest, self).save(*args, **kwargs)
 
 
 class Vehicle(models.Model):

@@ -1,7 +1,9 @@
 from django import forms
 from django.core.mail import send_mail
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.template.loader import render_to_string
+from bootstrap_datepicker_plus import DateTimePickerInput
 from . import models
 
 
@@ -31,19 +33,27 @@ class AppointmentUserForm(forms.ModelForm):
 class RequestAppointmentForm(forms.ModelForm):
     class Meta:
         model = models.AppointmentRequest
-        # fields = ('vehicle_repair', 'appointment_time')
-        fields = ('vehicle_repair',)
-        # widgets = {
-        #     'appointment_time': forms.SplitDateTimeWidget(date_attrs={'class':'form-control', "type": "date"}, time_attrs={'class':'form-control', "type": "time"}),
-        # }
+        fields = ('vehicle_repair', 'appointment_time')
+        widgets = {
+            'appointment_time': DateTimePickerInput(),
+        }
 
-    # appointment_time = forms.SplitDateTimeField()
 
     error_css_class = 'error'
     required_css_class = 'required'
+
+    def clean_appointment_time(self):
+        local_dt = self.cleaned_data['appointment_time']
+        if local_dt <= timezone.now():
+            raise forms.ValidationError("Please select an appointment in the future")
+        return local_dt
+
 
 
 class VehicleForm(forms.ModelForm):
     class Meta:
         model = models.Vehicle
         fields = ('vehicle_year', 'vehicle_make', 'vehicle_model')
+
+    error_css_class = 'error'
+    required_css_class = 'required'

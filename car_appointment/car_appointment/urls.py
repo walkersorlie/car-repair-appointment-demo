@@ -24,9 +24,9 @@ urlpatterns = [
     path('', include('repair_appointment.urls')),
 ]
 
-if settings.DEBUG:
-    import debug_toolbar
-    urlpatterns += [
-        # /__debug__/
-        path('__debug__/', include(debug_toolbar.urls)),
-    ]
+# if settings.DEBUG:
+#     import debug_toolbar
+#     urlpatterns += [
+#         # /__debug__/
+#         path('__debug__/', include(debug_toolbar.urls)),
+#     ]

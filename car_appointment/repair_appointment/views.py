@@ -32,7 +32,6 @@ class RequestActivationView(CreateView):
         }
         form.send_email(context)
 
-        # return HttpResponseRedirect(reverse_lazy('repair_appointment:request_activation_confirmed'))
         return super().form_valid(form)
 
 
@@ -42,8 +41,8 @@ class RequestAppointmentView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(RequestAppointmentView, self).get_context_data(**kwargs)
-
         user = models.AppointmentUser.objects.get(pk=self.kwargs['uid'])
+        user_forms_data = {}
         if user.is_activated:
             user_forms_data = {
                 'first_name': user.first_name,
@@ -54,7 +53,8 @@ class RequestAppointmentView(TemplateView):
 
             appointment_instance = user.appointmentrequest_set.order_by('pk')[0]
             appointment_form_data = {
-                'vehicle_repair': appointment_instance.vehicle_repair
+                'vehicle_repair': appointment_instance.vehicle_repair,
+                'appointment_time': appointment_instance.appointment_time
             }
             appointment_form = forms.RequestAppointmentForm(initial=appointment_form_data, prefix='appointment_form')
 
@@ -73,6 +73,7 @@ class RequestAppointmentView(TemplateView):
             vehicle_form = forms.VehicleForm(prefix='vehicle_form')
 
         context['user_form'] = user_form
+        context['user_forms_data'] = user_forms_data
         context['appointment_form'] = appointment_form
         context['vehicle_form'] = vehicle_form
         context['id'] = self.kwargs['uid']
@@ -80,22 +81,6 @@ class RequestAppointmentView(TemplateView):
         return context
 
     def get(self, request, *args, **kwargs):
-        # user = models.AppointmentUser.objects.get(pk=self.kwargs['uid'])
-        # if user.is_activated:
-        #     print('activated')
-        #     user_form = forms.AppointmentUserForm(user, prefix='user_form')
-        #     appointments_set = user.appointmentrequest_set.order_by('pk')[0]
-        #     appointment_form = forms.RequestAppointmentForm(appointments_set)
-        #     print(appointments_set.appointment_time)
-            # for num, obj in enumerate(appointments_set):
-            #     print(f'{num} {obj.appointment_user}')
-            #     if num == 0:
-            #         appointment_form = forms.RequestAppointmentForm(obj)
-            #         break
-            # vehicle_form = forms.VehicleForm(user.vehicle_set.order_by('pk')[0])
-
-            # appointment_form = forms.RequestAppointmentForm(user)
-
         return render(request, self.template_name, self.get_context_data(**kwargs))
 
     def post(self, request, *args, **kwargs):
@@ -111,9 +96,7 @@ class RequestAppointmentView(TemplateView):
             user_instance.is_activated = True
             user_instance.save()
 
-            # appointment_request_instance = models.AppointmentRequest(appointment_user=user_instance, vehicle_repair=appointment_form.cleaned_data['vehicle_repair'], appointment_time=appointment_form.cleaned_data['appointment_time'])
-            appointment_request_instance = models.AppointmentRequest(appointment_user=user_instance, vehicle_repair=appointment_form.cleaned_data['vehicle_repair'], appointment_time=datetime.datetime.now())
-
+            appointment_request_instance = models.AppointmentRequest(appointment_user=user_instance, vehicle_repair=appointment_form.cleaned_data['vehicle_repair'], appointment_time=appointment_form.cleaned_data['appointment_time'])
             appointment_request_instance.save()
 
             vehicle_instance = models.Vehicle(appointment_user=user_instance, vehicle_year=vehicle_form.cleaned_data['vehicle_year'], vehicle_model=vehicle_form.cleaned_data['vehicle_model'], vehicle_make=vehicle_form.cleaned_data['vehicle_make'])
@@ -164,59 +147,3 @@ def request_activation_confirmed_view(request):
 
 def request_appointment_confirmed_view(request):
     return render(request, 'repair_appointment/request_appointment_confirmed.html')
-
-
-
-# class RequestAppointmentView(TemplateView):
-    # template_name = 'repair_appointment/request_appointment.html'
-    # user_form = models.AppointmentUser
-    # appointment_form = models.AppointmentRequest
-    # vehicle_form = models.Vehicle
-#
-#     success_url = reverse_lazy('repair_appointment:request_appointment_confirmed')
-#
-#     def post(self, request):
-#
-#
-#     def form_valid(self, form):
-#         appointment = form.save(commit=False)
-#
-#         appointment.save()
-
-# def request_appointment(request, pk):
-#     user_instance = get_object_or_404(AppointmentUser, pk=pk)
-#
-#     # If this is a POST request then process the forms' data
-#     if request.method == 'POST':
-#
-#         # Create a form instance and populate it with data from the request (binding):
-#         user_form = model.AppointmentUserForm(request.POST)
-#         appointment_form = models.RequestAppointmentForm(request.POST)
-#         vehicle_form = models.VehicleFOrm(request.POST)
-#
-#         # Check if the form is valid:
-#         if user_form.is_valid():
-#             # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
-#             user_instance.first_name = user_form.first_name
-            # user_instance.last_name = user_form.last_name
-            # user_instance.phone_number = user_form.phone_number
-#
-#             user_instance.save()
-#
-#             # redirect to a new URL:
-#             return HttpResponseRedirect(reverse('repair_appointment:request_appointment_confirmed'))
-#
-#     # If this is a GET (or any other method) create the default form.
-#     else:
-#         user_form = model.AppointmentUserForm()
-#         appointment_form = model.RequestAppointmentForm()
-#         vehicle_form = model.VehicleForm()
-#
-#     context = {
-#         'user_form': user_form,
-#         'appointment_form': appointment_form,
-#         'vehicle_form': vehicle_form,
-#         'user_instance': user_instance,
-#     }
-#
-#     return render(request, 'repair_appointment/request_appointment.html', context)
