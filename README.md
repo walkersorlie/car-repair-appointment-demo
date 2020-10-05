@@ -14,5 +14,6 @@
 
 5. Once the dependencies are finished installing, change into the `car_appointment` directory (the Django project directory)
 6. Before launching the server we have to apply migrations to the database. Run this command to update the database: `python manage.py migrate` (make sure you are in the directory that contains the `manage.py` file)
-7. In the `car_appointment` directory run this command to start the server: `./manage.py runserver` (make sure you are in the directory that contains the `manage.py` file). The server starts up listening on port `8000`. In your browser, navigate to `http://127.0.0.1:8000/` (or `localhost:8000/`) to explore the project
+7. In the outer `car_appointment` directory run this command to start the server: `./manage.py runserver` (make sure you are in the directory that contains the `manage.py` file). The server starts up listening on port `8000`. In your browser, navigate to `http://127.0.0.1:8000/` (or `localhost:8000/`) to explore the project
 8. Emails are output to the console (command line prompt)
+9. Unit Tests are located in the `repair_appointment` directory. To run the tests you can run this command `./manage.py test` from the directory that contains the `manage.py` file (which is the Django project directory, the outer `car_appointment` directory)
