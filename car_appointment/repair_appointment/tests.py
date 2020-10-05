@@ -373,6 +373,7 @@ class RequestAppointmentViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.user.is_activated, True)
 
+        self.assertContains(response, "It looks like you've already requested an appointment")
         self.assertContains(response, '+34687191722')
         self.assertContains(response, 'Highlander')
         self.assertContains(response, 'Fix this')
@@ -391,10 +392,33 @@ class RequestAppointmentViewTests(TestCase):
     #     vehicle = models.Vehicle.objects.create(appointment_user=self.user, vehicle_year='2004', vehicle_model='Highlander', vehicle_make='Toyota')
     #     vehicle_form = forms.VehicleForm(vehicle, prefix='vehicle_form')
     #
-    #     post_data = {
-    #         'user_form': user_form,
-    #         'appointment_request_form': appointment_request_form,
-    #         'vehicle_form': vehicle_form,
+    #     appointment_form_data = {
+    #         'vehicle_repair': '',
+    #         'appointment_time': timezone.now() + datetime.timedelta(days=1),
     #     }
-
-        # response = self.client.post(reverse('repair_appointment:request_appointment', kwargs={'uid':self.user.id}), post_data)
+    #
+    #     vehicle_form_data = {
+    #         'vehicle_year': '2003',
+    #         'vehicle_make': 'Toyota',
+    #         'vehicle_model': 'Camry',
+    #     }
+    #
+    #     post_data = {
+    #         'user_form': forms.AppointmentUserForm(user_forms_data),
+    #         'appointment_request_form': forms.RequestAppointmentForm(appointment_form_data),
+    #         'vehicle_form': forms.VehicleForm(vehicle_form_data),
+    #     }
+    #
+    #     response = self.client.post(reverse('repair_appointment:request_appointment', kwargs={'uid':self.user.id}), post_data)
+        # print(response.content)
+        # self.assertFormError(response, response.context['appointment_form'], 'vehicle_repair', ['This field is required.'])
+        # for obj in response.context:
+        #     print(obj)
+        # print(response.status_code)
+        # print(response.context['appointment_form'].data['appointment_request_form'])
+        # self.assertNotContains(response.context['appointment_form'].data['appointment_request_form'], 'vehicle_repair', status_code='200')
+        # test = response.context['appointment_form'].data['appointment_request_form']
+        # self.assertContains(response.context['appointment_form'].data, 'vehicle_repair')
+        # self.assertEqual(len(mail.outbox), 1)
+        # self.assertEqual(mail.outbox[0].subject, 'Car Repair Appointment Activation Email')
+        # self.assertEqual(mail.outbox[0].to, [user.email_address])
